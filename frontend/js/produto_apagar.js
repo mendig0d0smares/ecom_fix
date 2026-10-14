@@ -26,3 +26,4 @@ btn_apagar.addEventListener('click', (e) => {
         resposta.innerHTML = '<p>Erro ao tentar apagar o registro.</p>'
     })
 })
+

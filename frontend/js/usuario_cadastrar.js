@@ -3,15 +3,19 @@ let btn_cadastrar = document.getElementById('btn_cadastrar')
 
 btn_cadastrar.addEventListener('click', (e) => {
     e.preventDefault()
-    
+
     const nome = document.getElementById('nome').value
     const email = document.getElementById('email').value
     const senha = document.getElementById('senha').value
+    const cpf = document.getElementById('cpf').value
+    const telefone = document.getElementById('telefone').value
 
-    const usuario = { 
+    const usuario = {
         nome: nome,
         email: email,
-        senha: senha
+        senha: senha,
+        cpf: cpf,
+        telefone: telefone
     }
 
     fetch('http://localhost:3000/usuario', {
@@ -21,12 +25,13 @@ btn_cadastrar.addEventListener('click', (e) => {
         },
         body: JSON.stringify(usuario)
     })
-    .then(res => res.json())
-    .then(dados => {
-        console.log(dados.message)
+    .then(res => res.json().then(dados => ({ ok: res.ok, dados })))
+    .then(({ ok, dados }) => {
         resposta.innerHTML = ''
         resposta.innerHTML += `<p>${dados.message}</p>`
-        document.querySelector('form').reset()
+        if (ok) {
+            document.querySelector('form').reset()
+        }
     })
     .catch((err) => {
         console.error('Erro ao cadastrar o usuário', err)

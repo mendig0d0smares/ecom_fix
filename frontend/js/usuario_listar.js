@@ -28,7 +28,8 @@ function criarTbody(dados) {
         corpo += `<td>${el.codUsuario}</td>`
         corpo += `<td>${el.nome}</td>`
         corpo += `<td>${el.email}</td>`
-        corpo += `<td>${el.senha}</td>`
+        corpo += `<td>${el.cpf}</td>`
+        corpo += `<td>${el.telefone}</td>`
         corpo += `</tr>`
     })
     corpo += `</tbody>`
@@ -36,16 +37,15 @@ function criarTbody(dados) {
 }
 
 function criarThead() {
-    let cabecalho = ''
-    cabecalho += `
+    return `
         <thead>
             <tr>
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Email</th>
-                <th>Senha</th>
+                <th>CPF</th>
+                <th>Telefone</th>
             </tr>
         </thead>
     `
-    return cabecalho
 }

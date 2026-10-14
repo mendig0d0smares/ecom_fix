@@ -93,3 +93,4 @@ const atualizar = async (req,res)=>{
 }
 
 module.exports = { cadastrar, listar, buscarPorCod, buscarPorNome, excluir, atualizar}
+

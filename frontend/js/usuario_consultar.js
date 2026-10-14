@@ -5,16 +5,15 @@ let btn_consultar_nome = document.getElementById('btn_consultar_nome')
 
 btn_consultar.addEventListener('click', (e) => {
      e.preventDefault()
-    
+
     const codUsuario = document.getElementById('codUsuario').value
 
     fetch(`http://localhost:3000/usuario/${codUsuario}`)
     .then(res => res.json())
     .then(dados => {
 
-        // Se não encontrar o usuário ou vier mensagem de erro
-        if (!dados) {
-            resposta.innerHTML = `<p>${'Usuário não encontrado!'}</p>`
+        if (!dados || dados.message) {
+            resposta.innerHTML = `<p>${(dados && dados.message) || 'Usuário não encontrado!'}</p>`
             return
         }
 
@@ -36,16 +35,15 @@ btn_consultar.addEventListener('click', (e) => {
 
 btn_consultar_nome.addEventListener('click', (e) => {
      e.preventDefault()
-    
+
     const nome = document.getElementById('nome').value
 
     fetch(`http://localhost:3000/usuario/buscar/${nome}`)
     .then(res => res.json())
     .then(dados => {
 
-        // Se não encontrar o usuário ou vier mensagem de erro
-        if (!dados) {
-            resposta_nome.innerHTML = `<p>${'Usuário não encontrado!'}</p>`
+        if (!dados || dados.message) {
+            resposta_nome.innerHTML = `<p>${(dados && dados.message) || 'Usuário não encontrado!'}</p>`
             return
         }
 
@@ -73,7 +71,8 @@ function criarTbody(dados) {
         corpo += `<td>${el.codUsuario}</td>`
         corpo += `<td>${el.nome}</td>`
         corpo += `<td>${el.email}</td>`
-        corpo += `<td>${el.senha}</td>`
+        corpo += `<td>${el.cpf}</td>`
+        corpo += `<td>${el.telefone}</td>`
         corpo += `</tr>`
     })
     corpo += `</tbody>`
@@ -81,16 +80,15 @@ function criarTbody(dados) {
 }
 
 function criarThead() {
-    let cabecalho = ''
-    cabecalho += `
+    return `
         <thead>
             <tr>
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Email</th>
-                <th>Senha</th>
+                <th>CPF</th>
+                <th>Telefone</th>
             </tr>
         </thead>
     `
-    return cabecalho
 }

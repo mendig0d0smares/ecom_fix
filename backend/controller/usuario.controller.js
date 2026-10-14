@@ -1,15 +1,26 @@
 const Usuario = require('../models/Usuario')
+const { criptografar, limparCpf, usuarioSeguro } = require('../utils/crypto')
 
 const cadastrar = async (req, res)=>{
     const valores = req.body
-    console.log(valores)
 
     if(!valores.nome || !valores.email || !valores.senha || !valores.cpf || !valores.telefone){
         return res.status(400).json({message: 'Todos os campos são obrigatórios!'})
     }
 
+    const cpf = limparCpf(valores.cpf)
+    if(cpf.length !== 11){
+        return res.status(400).json({message: 'CPF inválido! Informe 11 dígitos.'})
+    }
+
     try{
-        await Usuario.create(valores)
+        await Usuario.create({
+            nome: valores.nome,
+            email: valores.email,
+            senha: criptografar(valores.senha),
+            cpf: criptografar(cpf),
+            telefone: valores.telefone
+        })
         res.status(201).json({message: 'Usuario Cadastrado com sucesso!'})
     }catch(err){
         console.error('Não foi possível cadastrar o Usuário',err)
@@ -19,7 +30,7 @@ const cadastrar = async (req, res)=>{
 const listar = async (req,res)=>{
     try{
         const dados = await Usuario.findAll()
-        res.status(200).json(dados)
+        res.status(200).json(dados.map(usuarioSeguro))
     }catch(err){
         console.error('Não foi possível listar os Usuários',err)
         res.status(500).json({message: 'Não foi possível listar os Usuários'})
@@ -32,7 +43,7 @@ const buscarPorCod = async (req,res)=>{
         if(!dados){
             res.status(404).json({message: 'Usuário não encontrado!'})
         }else{
-            res.status(200).json(dados)
+            res.status(200).json(usuarioSeguro(dados))
         }
     }catch(err){
         console.error('Não foi possível encontrar o Usuário',err)
@@ -46,7 +57,7 @@ const buscarPorNome = async (req,res)=>{
         if(!dados){
             res.status(404).json({message: 'Nome do Usuário não encontrado!'})
         }else{
-            res.status(200).json(dados)
+            res.status(200).json(usuarioSeguro(dados))
         }
     }catch(err){
         console.error('Não foi possível encontrar o nome do Usuário',err)
@@ -70,16 +81,34 @@ const excluir = async (req,res)=>{
 }
 const atualizar = async (req,res)=>{
     const id = req.params.id
-    const valores = req.body
+    const valores = {}
+
+    // ignora campos vazios para não sobrescrever dados existentes
+    for(const campo of ['nome','email','senha','cpf','telefone']){
+        if(req.body[campo]) valores[campo] = req.body[campo]
+    }
+
     try{
         let dados = await Usuario.findByPk(id)
         if(!dados){
-            res.status(404).json({message: 'Usuário não encontrado no banco de dados!'})
-        }else{
-            await Usuario.update(valores, { where: { codUsuario: id}})
-            dados = await Usuario.findByPk(id)
-            res.status(200).json(dados)
+            return res.status(404).json({message: 'Usuário não encontrado no banco de dados!'})
         }
+
+        // criptografa antes de gravar
+        if(valores.senha){
+            valores.senha = criptografar(valores.senha)
+        }
+        if(valores.cpf){
+            const cpf = limparCpf(valores.cpf)
+            if(cpf.length !== 11){
+                return res.status(400).json({message: 'CPF inválido! Informe 11 dígitos.'})
+            }
+            valores.cpf = criptografar(cpf)
+        }
+
+        await Usuario.update(valores, { where: { codUsuario: id}})
+        dados = await Usuario.findByPk(id)
+        res.status(200).json(usuarioSeguro(dados))
     }catch(err){
         console.error('Não foi possível atualizar o Usuário',err)
         res.status(500).json({message: 'Não foi possível atualizar o Usuário'})

@@ -41,3 +41,4 @@ btn_cadastrar.addEventListener('click', (e) => {
         resposta.innerHTML = '<p>Erro ao tentar registrar a movimentação.</p>'
     })
 })
+

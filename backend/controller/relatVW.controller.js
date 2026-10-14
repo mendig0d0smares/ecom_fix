@@ -23,3 +23,4 @@ const listarHistoricoSaidas = async (req,res)=>{
 
 module.exports = { listarPorCategorias, listarHistoricoSaidas }
 
+

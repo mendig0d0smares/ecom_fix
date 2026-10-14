@@ -37,3 +37,4 @@ btn_cadastrar.addEventListener('click', (e) => {
         resposta.innerHTML = '<p>Erro ao tentar cadastrar o produto.</p>'
     })
 })
+

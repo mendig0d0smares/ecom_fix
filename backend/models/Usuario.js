@@ -15,16 +15,18 @@ const Usuario = db.define('usuario',{
         type: DataTypes.STRING(40),
         allowNull: false
     },
+    // senha criptografada (crypto-js) - o texto cifrado é maior que 40 caracteres
     senha: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(255),
         allowNull: false
     },
+    // cpf criptografado (crypto-js)
     cpf: {
-        type:DataTypes.STRING(100),
+        type: DataTypes.STRING(255),
         allowNull: false
     },
     telefone: {
-        type:DataTypes.STRING(100),
+        type: DataTypes.STRING(20),
         allowNull: false
     }
 },{
