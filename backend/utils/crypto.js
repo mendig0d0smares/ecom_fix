@@ -1,7 +1,7 @@
 const CryptoJS = require('crypto-js')
 
 // Em produção, defina CRYPTO_SECRET e JWT_SECRET como variáveis de ambiente
-const SECRET = process.env.CRYPTO_SECRET || 'footwear-express-chave-aes-dev'
+const SECRET = process.env.lowkey || 'footwear-express-chave-aes-dev'
 
 const criptografar = (texto)=>{
     return CryptoJS.AES.encrypt(String(texto), SECRET).toString()
